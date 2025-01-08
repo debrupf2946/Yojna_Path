@@ -1,0 +1,7 @@
+groq
+sounddevice 
+numpy 
+scipy 
+faster-whisper
+termcolor
+elevenlabs

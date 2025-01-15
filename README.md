@@ -25,7 +25,7 @@
 To start the application, run the following command:
 
 ```bash
-python3 main.py
+python3 twilio_service/main.py
 ```
 In another terminal using ngrock make yout local host public using the following command:
 ```bash

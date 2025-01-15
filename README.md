@@ -1,4 +1,5 @@
 # Yojna _Path
+![Yojanaपथ](assets/Yojanaपथ.png)
 ## About
 
 ## Vision

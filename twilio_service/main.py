@@ -1,13 +1,7 @@
-eleven_labs_key_2=""
-eleven_labs_key_3=""
-ELEVEN_LABS_AGENT_ID=""
-ELEVEN_LABS_AGENT_ID_1 = ""
-ELEVENLABS_API_KEY = eleven_labs_key_3
-
 import json
 import traceback
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from twilio.twiml.voice_response import VoiceResponse, Connect
@@ -15,15 +9,15 @@ from elevenlabs import ElevenLabs
 from elevenlabs.conversational_ai.conversation import Conversation
 from agent import TwilioAudioInterface
 
-# Load environment variables
-# load_dotenv()
 
-# Initialize FastAPI app
+load_dotenv()
+
+
 app = FastAPI()
 
-# Initialize ElevenLabs client
-eleven_labs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
-ELEVEN_LABS_AGENT_ID=""
+
+eleven_labs_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
+ELEVEN_LABS_AGENT_ID=os.getenv("AGENT_ID")
 
 @app.get("/")
 async def root():

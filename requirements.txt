@@ -10,3 +10,4 @@ elevenlabs
 websockets
 fastapi 
 uvicorn
+dotenv

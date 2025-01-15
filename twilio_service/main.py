@@ -1,7 +1,7 @@
-eleven_labs_key_2="sk_e06b2dfee6fb42c45ae394ce9cef87cbf4f11d16e1c5c3c1"
-eleven_labs_key_3="sk_ceb09169a1997457648058e9af9f27b6a1eafccc08777ea1"
-ELEVEN_LABS_AGENT_ID="zYHeyzthDSW3ICndIYAk"
-ELEVEN_LABS_AGENT_ID_1 = "OVdXRXaDyiHCegP0xpUI"
+eleven_labs_key_2=""
+eleven_labs_key_3=""
+ELEVEN_LABS_AGENT_ID=""
+ELEVEN_LABS_AGENT_ID_1 = ""
 ELEVENLABS_API_KEY = eleven_labs_key_3
 
 import json
@@ -23,7 +23,7 @@ app = FastAPI()
 
 # Initialize ElevenLabs client
 eleven_labs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
-ELEVEN_LABS_AGENT_ID="zYHeyzthDSW3ICndIYAk"
+ELEVEN_LABS_AGENT_ID=""
 
 @app.get("/")
 async def root():

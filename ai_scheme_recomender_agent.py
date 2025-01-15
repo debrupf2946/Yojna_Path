@@ -14,10 +14,9 @@ from termcolor import colored
 from datetime import datetime
 
 # API Keys
-ELEVEL_LABS_APIKEY = "sk_b47a2a43e55e9bf5e28f417fc3686bc8942fbd9a5749e624"
-VOICE_ID = "pNInz6obpgDQGcFmaJgB"
-GROQ_APIKEY = "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"
-
+ELEVEL_LABS_APIKEY = ""
+VOICE_ID = ""
+GROQ_APIKEY = ""
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,6 +1,11 @@
 # Yojna _Path
-![Yojanaपथ](assets/Yojanaपथ.png)
+
+<div align="center">
+    <img src="assets/Yojanaपथ.png" alt="Yojanaपथ" />
+</div>
+
 ## About
+
 
 ## Vision
 ## Getting Started

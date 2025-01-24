@@ -41,7 +41,22 @@ def generate_answer(question: str):
     
     return assistant_response
 
+@app.get("/")
+def root():
+    return {"message": "hello world"}
 
 
-question="suggest me any 2 govt schemes?"
-ans=generate_answer(question)
+@app.api_route("/grock",methods=["POST"])
+async def grock(request: Request):
+    form_data = await request.form()  
+    incoming_question = form_data.get("Body", "").lower()
+    
+    genearated_answer=generate_answer(incoming_question)
+    
+    return genearated_answer
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -42,12 +42,15 @@ class TwilioAudioInterface(AudioInterface):
             if data["event"] == "start":
                 self.stream_sid = data["start"]["streamSid"]
                 print(f"Started stream with stream_sid: {self.stream_sid}")
-            if data["event"] == "media":
+            elif data["event"] == "media":
                 audio_data = base64.b64decode(data["media"]["payload"])
                 if self.input_callback:
                     self.input_callback(audio_data)
+            elif data["event"] == "stop":
+                print(f"Stream stopped: {self.stream_sid}")
+                self.stop()
         except Exception as e:
-            print(f"Error in input_callback: {e}")
+            print(f"Error handling Twilio message: {e}")
 
     def _output_thread(self):
         while not self.should_stop.is_set():

@@ -1,6 +1,7 @@
 import json
 import traceback
 import os
+import time
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
@@ -14,14 +15,25 @@ load_dotenv()
 
 
 app = FastAPI()
-
+_start_time = time.time()
 
 eleven_labs_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
-ELEVEN_LABS_AGENT_ID=os.getenv("AGENT_ID")
+ELEVEN_LABS_AGENT_ID = os.getenv("AGENT_ID")
+
 
 @app.get("/")
 async def root():
     return {"message": "Twilio-ElevenLabs Integration Server"}
+
+
+@app.get("/health")
+async def health_check():
+    """Return service health status and uptime in seconds."""
+    return {
+        "status": "ok",
+        "uptime_seconds": round(time.time() - _start_time, 2),
+        "agent_id_configured": bool(ELEVEN_LABS_AGENT_ID),
+    }
 
 @app.api_route("/incoming-call-eleven", methods=["GET", "POST"])
 async def handle_incoming_call(request: Request):

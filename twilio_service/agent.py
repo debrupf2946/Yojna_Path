@@ -1,10 +1,14 @@
 import asyncio
+import logging
 from typing import Callable
 import queue
 import threading
 import base64
 from elevenlabs.conversational_ai.conversation import AudioInterface
 import websockets
+
+logger = logging.getLogger(__name__)
+
 
 class TwilioAudioInterface(AudioInterface):
     def __init__(self, websocket):
@@ -41,13 +45,16 @@ class TwilioAudioInterface(AudioInterface):
         try:
             if data["event"] == "start":
                 self.stream_sid = data["start"]["streamSid"]
-                print(f"Started stream with stream_sid: {self.stream_sid}")
-            if data["event"] == "media":
+                logger.info("Stream started: %s", self.stream_sid)
+            elif data["event"] == "media":
                 audio_data = base64.b64decode(data["media"]["payload"])
                 if self.input_callback:
                     self.input_callback(audio_data)
+            elif data["event"] == "stop":
+                logger.info("Stream stopped: %s", self.stream_sid)
+                self.stop()
         except Exception as e:
-            print(f"Error in input_callback: {e}")
+            logger.error("Error handling Twilio message: %s", e)
 
     def _output_thread(self):
         while not self.should_stop.is_set():
@@ -66,11 +73,11 @@ class TwilioAudioInterface(AudioInterface):
         except queue.Empty:
             pass
         except Exception as e:
-            print(f"Error sending audio: {e}")
+            logger.error("Error sending audio: %s", e)
 
     async def _send_clear_message_to_twilio(self):
         try:
             clear_message = {"event": "clear", "streamSid": self.stream_sid}
             await self.websocket.send_json(clear_message)
         except Exception as e:
-            print(f"Error sending clear message to Twilio: {e}")
+            logger.error("Error sending clear message to Twilio: %s", e)

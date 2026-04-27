@@ -19,31 +19,37 @@ from groq import Groq
 
 app = FastAPI()
 
-
 gclient = Groq(api_key=GROQ_APIKEY)
 
 messages_history = [{"role": "system", "content": SYSTEM_PROMPT}]
 
+MAX_HISTORY = 20
 
 
-async def generate_answer(question: str):
+async def generate_answer(question: str) -> str:
     messages_history.append({"role": "user", "content": question})
-    
 
-    completion = gclient.chat.completions.create(
-        model="mixtral-8x7b-32768",
-        messages=messages_history,
-        temperature=0.5,
-        max_tokens=200,
-        top_p=1,
-        stream=False,
-    )
-    
+    # Keep history bounded: system prompt + last MAX_HISTORY user/assistant turns
+    if len(messages_history) > MAX_HISTORY + 1:
+        del messages_history[1 : len(messages_history) - MAX_HISTORY]
 
-    assistant_response = completion.choices[0].message.content
+    try:
+        completion = gclient.chat.completions.create(
+            model="mixtral-8x7b-32768",
+            messages=messages_history,
+            temperature=0.5,
+            max_tokens=200,
+            top_p=1,
+            stream=False,
+        )
+        assistant_response = completion.choices[0].message.content
+    except Exception as e:
+        logger.error("Groq API error: %s", e)
+        messages_history.pop()
+        return "Sorry, I encountered an error. Please try again."
+
     logger.info("Response from Groq client: %s", assistant_response)
     messages_history.append({"role": "assistant", "content": assistant_response})
-    
     return assistant_response
 
 

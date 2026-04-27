@@ -1,4 +1,5 @@
 import json
+import logging
 import traceback
 import os
 from dotenv import load_dotenv
@@ -12,6 +13,8 @@ from agent import TwilioAudioInterface
 
 load_dotenv()
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -36,7 +39,7 @@ async def handle_incoming_call(request: Request):
 @app.websocket("/media-stream-eleven")
 async def handle_media_stream(websocket: WebSocket):
     await websocket.accept()
-    print("WebSocket connection established")
+    logger.info("WebSocket connection established")
 
     audio_interface = TwilioAudioInterface(websocket)
     conversation = None
@@ -47,12 +50,12 @@ async def handle_media_stream(websocket: WebSocket):
             agent_id=ELEVEN_LABS_AGENT_ID,
             requires_auth=False,
             audio_interface=audio_interface,
-            callback_agent_response=lambda text: print(f"Agent said: {text}"),
-            callback_user_transcript=lambda text: print(f"User said: {text}"),
+            callback_agent_response=lambda text: logger.info("Agent said: %s", text),
+            callback_user_transcript=lambda text: logger.info("User said: %s", text),
         )
 
         conversation.start_session()
-        print("Conversation session started")
+        logger.info("Conversation session started")
 
         async for message in websocket.iter_text():
             if not message:
@@ -62,14 +65,14 @@ async def handle_media_stream(websocket: WebSocket):
                 data = json.loads(message)
                 await audio_interface.handle_twilio_message(data)
             except Exception as e:
-                print(f"Error processing message: {str(e)}")
+                logger.error("Error processing message: %s", str(e))
                 traceback.print_exc()
 
     except WebSocketDisconnect:
-        print("WebSocket disconnected")
+        logger.info("WebSocket disconnected")
     finally:
         if conversation:
-            print("Ending conversation session...")
+            logger.info("Ending conversation session...")
             conversation.end_session()
             conversation.wait_for_session_end()
 
